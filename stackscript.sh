@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# <UDF name="USER_PASS" Label="NodeJS UserPassword" />
+
+
 # All done
 echo "Starting Setup!"
 
@@ -20,6 +23,8 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get -y -o Acquire::ForceIPv4=true -o Dpk
 # add-apt-repository ppa:certbot/certbot
 # apt-get install certbot
 
+echo "Starting setup mongodb!"
+
 apt-get -y install mongodb
 
 # Project specific vars
@@ -34,6 +39,8 @@ sed -re 's/^(UsePAM)([[:space:]]+)yes/\1\2no/' -i.'' /etc/ssh/sshd_config
 sed -re 's/^(PermitRootLogin)([[:space:]]+)yes/\1\2no/' -i.'' /etc/ssh/sshd_config
 sudo systemctl restart sshd
 
+echo "Starting setup nvm!"
+
 
 # nvm/npm/pm2
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
@@ -45,17 +52,21 @@ nvm install 16
 nvm use 16
 npm install -g pm2
 
-npx greenlock init --config-dir ./greenlock.d --maintainer-email $SSL_EMAIL
-npx greenlock add --subject $DOMAIN --altnames $DOMAIN
+echo "Starting setup nodejs!"
+
+# npx greenlock init --config-dir ./greenlock.d --maintainer-email $SSL_EMAIL
+# npx greenlock add --subject $DOMAIN --altnames $DOMAIN
 
 # Add user
-# cp /root/.bashrc /etc/skel/.bashrc
-# adduser --disabled-password --gecos "" --shell /bin/bash $GITHUB_USER
-# usermod -aG sudo $GITHUB_USER
-# # echo "$GITHUB_USER:$USER_PASSWORD" | sudo chpasswd
-# mkdir -p /home/$GITHUB_USER/.ssh
-# cat /root/.ssh/authorized_keys >> /home/$GITHUB_USER/.ssh/authorized_keys
-# chown -R "$GITHUB_USER":"$GITHUB_USER" /home/$GITHUB_USER/.ssh
+cp /root/.bashrc /etc/skel/.bashrc
+adduser --disabled-password --gecos "" --shell /bin/bash $GITHUB_USER
+usermod -aG sudo $GITHUB_USER
+# echo "$GITHUB_USER:$USER_PASS" | sudo chpasswd
+mkdir -p /home/$GITHUB_USER/.ssh
+cat /root/.ssh/authorized_keys >> /home/$GITHUB_USER/.ssh/authorized_keys
+chown -R "$GITHUB_USER":"$GITHUB_USER" /home/$GITHUB_USER/.ssh
+
+echo "installing nodejs setup!"
 
 # Install app
 APP_DIR="/root/$GITHUB_REPO"
@@ -66,11 +77,11 @@ cd $APP_DIR
 npm install
 
 # Make it user accessible
-# chown -R "$GITHUB_USER":"$GITHUB_USER" $APP_DIR/
+chown -R "$GITHUB_USER":"$GITHUB_USER" $APP_DIR/
 
 echo "Starting Setup App!"
 
-node app.js
+node setup.js
 # pm2 start app.js -f
 
 # All done
