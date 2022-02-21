@@ -1,0 +1,28 @@
+{
+  "name": "personal-metaverse-stack",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wonglok/personal-metaverse.git"
+  },
+  "keywords": [
+    "metaverse"
+  ],
+  "author": "wonglok",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wonglok/personal-metaverse/issues"
+  },
+  "homepage": "https://github.com/wonglok/personal-metaverse#readme",
+  "dependencies": {
+    "express": "^4.17.3",
+    "nodemon": "^2.0.15",
+    "socket.io": "^4.4.1"
+  }
+}
