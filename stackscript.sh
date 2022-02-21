@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# <UDF name="USER_PASSWORD" Label="Password for user account" />
-
 # All done
 echo "Starting Setup!"
 
@@ -19,6 +17,11 @@ exec 2>&1
 sudo apt-get -y -o Acquire::ForceIPv4=true -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" update
 sudo DEBIAN_FRONTEND=noninteractive apt-get -y -o Acquire::ForceIPv4=true -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
 
+# add-apt-repository ppa:certbot/certbot
+# apt-get install certbot
+
+apt-get -y install mongodb
+
 # Project specific vars
 GITHUB_USER="wonglok"
 GITHUB_REPO="personal-metaverse"
@@ -31,7 +34,6 @@ sed -re 's/^(UsePAM)([[:space:]]+)yes/\1\2no/' -i.'' /etc/ssh/sshd_config
 sed -re 's/^(PermitRootLogin)([[:space:]]+)yes/\1\2no/' -i.'' /etc/ssh/sshd_config
 sudo systemctl restart sshd
 
-apt-get -y install mongodb
 
 # nvm/npm/pm2
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
@@ -42,6 +44,9 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 nvm install 16
 nvm use 16
 npm install -g pm2
+
+npx greenlock init --config-dir ./greenlock.d --maintainer-email $SSL_EMAIL
+npx greenlock add --subject $DOMAIN --altnames $DOMAIN
 
 # Add user
 # cp /root/.bashrc /etc/skel/.bashrc
@@ -60,17 +65,13 @@ mv -T $GITHUB_USER-$GITHUB_REPO-* $APP_DIR
 cd $APP_DIR
 npm install
 
-# # App env
-# echo "TWITTER_KEY=$TWITTER_KEY" >> .env
-# echo "TWITTER_SECRET=$TWITTER_SECRET" >> .env
-# echo "TWITTER_TOKEN=$TWITTER_TOKEN" >> .env
-# echo "TWITTER_TOKEN_SECRET=$TWITTER_TOKEN_SECRET" >> .env
-# echo "POSTGRES_URL=$POSTGRES_URL" >> .env
-
 # Make it user accessible
 # chown -R "$GITHUB_USER":"$GITHUB_USER" $APP_DIR/
 
-pm2 start app.js -f
+echo "Starting Setup App!"
+
+node app.js
+# pm2 start app.js -f
 
 # All done
 echo "Success!"

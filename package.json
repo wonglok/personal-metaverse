@@ -21,7 +21,11 @@
   },
   "homepage": "https://github.com/wonglok/personal-metaverse#readme",
   "dependencies": {
+    "acme-http-01-standalone": "^3.0.5",
+    "dotenv": "^16.0.0",
     "express": "^4.17.3",
+    "greenlock": "^4.0.4",
+    "greenlock-express": "^4.0.3",
     "nodemon": "^2.0.15",
     "socket.io": "^4.4.1"
   }

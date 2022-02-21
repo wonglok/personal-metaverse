@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="./css/tailwind.min.css"
+      integrity="sha512-wnea99uKIC3TJF7v4eKk4Y+lMz2Mklv18+r4na2Gn1abDRPPOeef95xTzdwGD9e6zXJBteMIhZ1+68QC5byJZw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body class="p-4">
+    <h1 class="font-bold text-2xl">Welcome to Metaverse Setup</h1>
+
+    <div id="dnssetuparea">
+      <div class="mb-3">
+        Please setup your DNS Domain name A Records Before you begin next setup.
+      </div>
+      <div class="mb-3">
+        A Record <span id="ipspan" class="bg-gray-200 text-sm p-2"></span>
+      </div>
+      <div>
+        <button
+          id="donednssetup"
+          class="p-3 bg-blue-500 text-white text-sm rounded-lg"
+        >
+          I already setup the Domain Name DNS Record
+        </button>
+      </div>
+    </div>
+
+    <form style="display: none" id="setupsslarea">
+      <div>Primary Domain Name:</div>
+      <div>
+        <input
+          type="text"
+          id="domain0"
+          class="mb-3 p-3 rounded-lg bg-gray-200"
+          placeholder="mymetaverse.com"
+          required
+        />
+      </div>
+      <div>Other Domain Name:</div>
+      <div>
+        <input
+          type="text"
+          id="domain1"
+          class="mb-3 p-3 rounded-lg bg-gray-200"
+          placeholder="www.mymetaverse.com"
+        />
+      </div>
+      <div>
+        <input
+          type="text"
+          id="domain2"
+          class="mb-3 p-3 rounded-lg bg-gray-200"
+          placeholder="fun.mymetaverse.com"
+        />
+      </div>
+      <div>
+        <input
+          type="text"
+          id="domain3"
+          class="mb-3 p-3 rounded-lg bg-gray-200"
+          placeholder="others.mymetaverse.com"
+        />
+      </div>
+
+      <div>Greenlock SSL Email:</div>
+      <div>
+        <input
+          type="text"
+          id="email"
+          class="mb-3 p-3 rounded-lg bg-gray-200"
+          placeholder="myemail@gmail.com"
+        />
+      </div>
+
+      <div>
+        <button id="submitssl" class="bg-green-200 mb-3 p-3 rounded-lg">
+          Submit
+        </button>
+      </div>
+    </form>
+
+    <script>
+      window.onload = () => {
+        let $1 = (v) => document.querySelector(v);
+        let el = {
+          ipspan: $1("#ipspan"),
+          email: $1("#email"),
+          setupsslarea: $1("#setupsslarea"),
+          domain0: $1("#domain0"),
+          domain1: $1("#domain1"),
+          domain2: $1("#domain2"),
+          domain3: $1("#domain3"),
+          submitssl: $1("#submitssl"),
+          donednssetup: $1("#donednssetup"),
+          dnssetuparea: $1("#dnssetuparea"),
+        };
+        async function submit(ev) {
+          //
+          let domains = [
+            el.domain0.value,
+            el.domain1.value,
+            el.domain2.value,
+            el.domain3.value,
+          ].filter((e) => e);
+
+          if (domains.length === 0) {
+            alert("you need to fill in at least 1 domain");
+          }
+          if (!email) {
+            alert("you need to fill in email for ssl");
+          }
+          //
+
+          let result = await fetch("/create", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              domains,
+              email,
+            }),
+          })
+            .then((e) => e.json())
+            .then(() => {
+              //
+            });
+        }
+
+        el.donednssetup.addEventListener("click", () => {
+          el.dnssetuparea.style.display = "none";
+          el.setupsslarea.style.display = "block";
+        });
+        el.submitssl.addEventListener("click", submit);
+
+        el.ipspan.innerHTML = `${window.location.hostname}`;
+        // async function init() {
+        //   let IPData = await fetch("/ips").then((e) => e.json());
+
+        //   let myIPHTML = "";
+        //   IPData.forEach((e) => {
+        //     myIPHTML = `
+        //   ${myIPHTML}
+        //   <div>IP: ${e}</div>
+        // `;
+        //   });
+
+        //   el.ips.innerHTML = myIPHTML;
+        // }
+        // init();
+      };
+    </script>
+  </body>
+</html>
