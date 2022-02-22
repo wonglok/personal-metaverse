@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# <UDF name="SSL_EMAIL" Label="SSL Contact Email" />
 # <UDF name="DOMAIN" Label="Domain" />
 # <UDF name="ALREADY_SETUP_A_RECORD_DNS" Label="I already setup an "A Record in DNS" oneof="yes,no" default="no" />
 

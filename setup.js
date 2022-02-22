@@ -95,6 +95,6 @@ app.post("/done", (req, res) => {
 
 //
 http.listen(port, () => {
-  console.log("try open these");
+  console.log("open setup page");
   console.log(IPs.map((e) => `http://${e}:${port}`).join("\n"));
 });

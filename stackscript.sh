@@ -6,15 +6,15 @@
 # All done
 echo "Starting Setup!"
 
-set -e
+# set -e
 
-# Save stdout and stderr
-exec 6>&1
-exec 5>&2
+# # Save stdout and stderr
+# exec 6>&1
+# exec 5>&2
 
-# Redirect stdout and stderr to a file
-exec > /root/StackScript.out
-exec 2>&1
+# # Redirect stdout and stderr to a file
+# exec > /root/StackScript.out
+# exec 2>&1
 
 # apt-get
 sudo apt-get -y -o Acquire::ForceIPv4=true -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" update
@@ -87,6 +87,6 @@ node setup.js
 # All done
 echo "Success!"
 
-# Restore stdout and stderr
-exec 1>&6 6>&-
-exec 2>&5 5>&-
+# # Restore stdout and stderr
+# exec 1>&6 6>&-
+# exec 2>&5 5>&-
