@@ -42,7 +42,6 @@ sudo systemctl restart sshd
 
 echo "Starting setup nvm!"
 
-
 # nvm/npm/pm2
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 
