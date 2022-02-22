@@ -27,6 +27,9 @@ apt-get -y install mongodb
 GITHUB_USER="wonglok"
 GITHUB_REPO="personal-metaverse"
 
+NODE_USER="mynode"
+
+
 # SSH
 echo 'AddressFamily inet' | sudo tee -a /etc/ssh/sshd_config
 sed -re 's/^(\#)(PasswordAuthentication)([[:space:]]+)(.*)/\2\3\4/' -i.'' /etc/ssh/sshd_config
@@ -51,29 +54,31 @@ echo "Starting setup user!"
 
 # Add user
 cp /root/.bashrc /etc/skel/.bashrc
-adduser --disabled-password --gecos "" --shell /bin/bash $GITHUB_USER
-usermod -aG sudo $GITHUB_USER
-echo "$GITHUB_USER:$USER_PASS" | sudo chpasswd
-mkdir -p /home/$GITHUB_USER/.ssh
-cat /root/.ssh/authorized_keys >> /home/$GITHUB_USER/.ssh/authorized_keys
-chown -R "$GITHUB_USER":"$GITHUB_USER" /home/$GITHUB_USER/.ssh
+adduser --disabled-password --gecos "" --shell /bin/bash $NODE_USER
+usermod -aG sudo $NODE_USER
+echo "$NODE_USER:$USER_PASS" | sudo chpasswd
+mkdir -p /home/$NODE_USER/.ssh
+cat /root/.ssh/authorized_keys >> /home/$NODE_USER/.ssh/authorized_keys
+chown -R "$NODE_USER":"$NODE_USER" /home/$NODE_USER/.ssh
 
 echo "Adding App Files"
 
 # Install app
-APP_DIR="/home/$GITHUB_USER/$GITHUB_REPO"
+APP_DIR="/home/$NODE_USER/$GITHUB_REPO"
 curl -L https://github.com/$GITHUB_USER/$GITHUB_REPO/tarball/master | tar zx
 mkdir -p $APP_DIR
 mv -T $GITHUB_USER-$GITHUB_REPO-* $APP_DIR
 cd $APP_DIR
 npm install
 
+openssl genrsa 4096 > account.key
+
 # Make it user accessible
-chown -R "$GITHUB_USER":"$GITHUB_USER" $APP_DIR/
+chown -R "$NODE_USER":"$NODE_USER" $APP_DIR/
+
 
 echo "Starting Setup App!"
 
-openssl genrsa 4096 > account.key
 
 # node setup.js
 pm2 start app.js -f
@@ -84,5 +89,3 @@ echo "Success!"
 # # Restore stdout and stderr
 exec 1>&6 6>&-
 exec 2>&5 5>&-
-
-# certbot certonly --standalone -d metaverse.thankyoudb.com -n --agree-tos --email yellowhappy831@gmail.com

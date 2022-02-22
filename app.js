@@ -5,6 +5,7 @@ const io = require("socket.io")(http);
 const port = process.env.PORT || 80;
 
 app.use(express.static(`setupPublic`));
+app.use("/.well-known", express.static("challenge"));
 app.use(express.json({ limit: "50mb" }));
 
 io.on("connection", (socket) => {
@@ -16,6 +17,7 @@ io.on("connection", (socket) => {
 app.post("/register", async (req, res) => {
   let email = req.body.email;
   let domain = req.body.domain;
+
   const fs = require("fs");
   const LEClient = require("letsencrypt-client");
 
@@ -32,17 +34,17 @@ app.post("/register", async (req, res) => {
     }
   );
 
-  let domains = [domain];
-  client.start(domains).then(
-    function (v) {
+  client.requestAuthorization(domain).then(
+    function ({ path, keyAuthorization }) {
       // loop through all domains
-      console.log(v);
+      console.log(path, keyAuthorization);
 
-      res.json(v);
+      res.json({
+        path,
+        keyAuthorization,
+      });
     },
-    () => {
-      res.json(v);
-    }
+    () => {}
   );
 
   //
