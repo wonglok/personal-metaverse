@@ -33,9 +33,17 @@ app.post("/register", async (req, res) => {
   );
 
   let domains = [domain];
-  client.start(domains).then(function () {
-    // loop through all domains
-  });
+  client.start(domains).then(
+    function (v) {
+      // loop through all domains
+      console.log(v);
+
+      res.json(v);
+    },
+    () => {
+      res.json(v);
+    }
+  );
 
   //
 });
