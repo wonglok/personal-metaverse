@@ -79,12 +79,11 @@
           }
           if (!email) {
             alert("you need to fill in email for ssl");
-
             return;
           }
           //
 
-          let result = await fetch("/create", {
+          let result = await fetch("/register", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

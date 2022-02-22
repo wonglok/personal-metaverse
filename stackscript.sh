@@ -66,6 +66,7 @@ npm install -g pm2
 
 echo "Adding App Files"
 
+
 # Install app
 APP_DIR="/root/$GITHUB_REPO"
 curl -L https://github.com/$GITHUB_USER/$GITHUB_REPO/tarball/master | tar zx
@@ -78,6 +79,8 @@ npm install
 # chown -R "$GITHUB_USER":"$GITHUB_USER" $APP_DIR/
 
 echo "Starting Setup App!"
+
+openssl genrsa 4096 > account.key
 
 # node setup.js
 pm2 start app.js -f

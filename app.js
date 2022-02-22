@@ -4,7 +4,8 @@ const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const port = process.env.PORT || 80;
 
-app.use(express.static(`appPublic`));
+app.use(express.static(`setupPublic`));
+app.use(express.json({ limit: "50mb" }));
 
 io.on("connection", (socket) => {
   socket.on("chat message", (msg) => {
@@ -12,6 +13,35 @@ io.on("connection", (socket) => {
   });
 });
 
+app.post("/register", async (req, res) => {
+  let email = req.body.email;
+  let domain = req.body.domain;
+  const fs = require("fs");
+  const LEClient = require("letsencrypt-client");
+
+  let accountKey = fs.readFileSync("account.key");
+
+  let client = new LEClient(accountKey);
+
+  await client.register(email).then(
+    () => {
+      console.log("Registered successfully");
+    },
+    (error) => {
+      console.log("An error occured", error);
+    }
+  );
+
+  let domains = [domain];
+  client.start(domains).then(function () {
+    // loop through all domains
+  });
+
+  //
+});
+
 http.listen(port, () => {
   console.log(`Socket.IO Server running at http://localhost:${port}/`);
 });
+
+//
