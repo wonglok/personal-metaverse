@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# <UDF name="USER_PASS" Label="NodeJS Runtime Password" />
-
 
 # All done
 echo "Starting Setup!"
@@ -20,8 +18,11 @@ exec 2>&1
 sudo apt-get -y -o Acquire::ForceIPv4=true -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" update
 sudo DEBIAN_FRONTEND=noninteractive apt-get -y -o Acquire::ForceIPv4=true -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
 
-# add-apt-repository ppa:certbot/certbot
-# apt-get install certbot
+echo "Starting setup certbot!"
+
+add-apt-repository ppa:certbot/certbot -y
+apt-get update -y
+apt-get install certbot -y
 
 echo "Starting setup mongodb!"
 
@@ -52,19 +53,18 @@ nvm install 16
 nvm use 16
 npm install -g pm2
 
-echo "Starting setup nodejs!"
+# echo "Starting setup nodejs!"
 
+# # Add user
+# cp /root/.bashrc /etc/skel/.bashrc
+# adduser --disabled-password --gecos "" --shell /bin/bash $GITHUB_USER
+# usermod -aG sudo $GITHUB_USER
+# echo "$GITHUB_USER:$USER_PASS" | sudo chpasswd
+# mkdir -p /home/$GITHUB_USER/.ssh
+# cat /root/.ssh/authorized_keys >> /home/$GITHUB_USER/.ssh/authorized_keys
+# chown -R "$GITHUB_USER":"$GITHUB_USER" /home/$GITHUB_USER/.ssh
 
-# Add user
-cp /root/.bashrc /etc/skel/.bashrc
-adduser --disabled-password --gecos "" --shell /bin/bash $GITHUB_USER
-usermod -aG sudo $GITHUB_USER
-echo "$GITHUB_USER:$USER_PASS" | sudo chpasswd
-mkdir -p /home/$GITHUB_USER/.ssh
-cat /root/.ssh/authorized_keys >> /home/$GITHUB_USER/.ssh/authorized_keys
-chown -R "$GITHUB_USER":"$GITHUB_USER" /home/$GITHUB_USER/.ssh
-
-echo "installing nodejs setup!"
+echo "Adding App Files"
 
 # Install app
 APP_DIR="/root/$GITHUB_REPO"
@@ -75,12 +75,12 @@ cd $APP_DIR
 npm install
 
 # Make it user accessible
-chown -R "$GITHUB_USER":"$GITHUB_USER" $APP_DIR/
+# chown -R "$GITHUB_USER":"$GITHUB_USER" $APP_DIR/
 
 echo "Starting Setup App!"
 
-node setup.js
-# pm2 start app.js -f
+# node setup.js
+pm2 start app.js -f
 
 # All done
 echo "Success!"
@@ -88,3 +88,5 @@ echo "Success!"
 # # Restore stdout and stderr
 exec 1>&6 6>&-
 exec 2>&5 5>&-
+
+# certbot certonly --standalone -d metaverse.thankyoudb.com -n --agree-tos --email yellowhappy831@gmail.com
