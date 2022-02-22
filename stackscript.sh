@@ -61,7 +61,7 @@ echo "Starting setup nodejs!"
 cp /root/.bashrc /etc/skel/.bashrc
 adduser --disabled-password --gecos "" --shell /bin/bash $GITHUB_USER
 usermod -aG sudo $GITHUB_USER
-# echo "$GITHUB_USER:$USER_PASS" | sudo chpasswd
+echo "$GITHUB_USER:$USER_PASS" | sudo chpasswd
 mkdir -p /home/$GITHUB_USER/.ssh
 cat /root/.ssh/authorized_keys >> /home/$GITHUB_USER/.ssh/authorized_keys
 chown -R "$GITHUB_USER":"$GITHUB_USER" /home/$GITHUB_USER/.ssh
