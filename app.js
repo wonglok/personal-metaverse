@@ -5,7 +5,6 @@ const io = require("socket.io")(http);
 const port = process.env.PORT || 80;
 
 app.use(express.static(`setupPublic`));
-app.use("/.well-known", express.static("challenge"));
 app.use(express.json({ limit: "50mb" }));
 
 io.on("connection", (socket) => {
