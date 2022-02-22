@@ -29,7 +29,6 @@ GITHUB_REPO="personal-metaverse"
 
 NODE_USER="mynode"
 
-
 # SSH
 echo 'AddressFamily inet' | sudo tee -a /etc/ssh/sshd_config
 sed -re 's/^(\#)(PasswordAuthentication)([[:space:]]+)(.*)/\2\3\4/' -i.'' /etc/ssh/sshd_config
@@ -71,14 +70,10 @@ mv -T $GITHUB_USER-$GITHUB_REPO-* $APP_DIR
 cd $APP_DIR
 npm install
 
-openssl genrsa 4096 > account.key
-
 # Make it user accessible
 chown -R "$NODE_USER":"$NODE_USER" $APP_DIR/
 
-
 echo "Starting Setup App!"
-
 
 # node setup.js
 pm2 start app.js -f

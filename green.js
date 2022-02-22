@@ -31,7 +31,6 @@ require("greenlock-express")
   .init({
     packageRoot: __dirname,
     configDir: "./greenlock.d",
-
     maintainerEmail: "yellowhappy831@gmail.com",
     cluster: false,
   })

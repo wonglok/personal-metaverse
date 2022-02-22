@@ -18,36 +18,48 @@ app.post("/register", async (req, res) => {
   let email = req.body.email;
   let domain = req.body.domain;
 
-  const fs = require("fs");
-  const LEClient = require("letsencrypt-client");
-
-  let accountKey = fs.readFileSync("account.key");
-
-  let client = new LEClient(accountKey);
-
-  await client.register(email).then(
-    () => {
-      console.log("Registered successfully");
+  var pkg = require("./package.json");
+  var Greenlock = require("greenlock");
+  var greenlock = Greenlock.create({
+    configDir: "./greenlock.d/config.json",
+    packageAgent: pkg.name + "/" + pkg.version,
+    maintainerEmail: email,
+    staging: true,
+    notify: function (event, details) {
+      if ("error" === event) {
+        // `details` is an error object in this case
+        console.error(details);
+      }
     },
-    (error) => {
-      console.log("An error occured", error);
-    }
-  );
+  });
 
-  client.requestAuthorization(domain).then(
-    function ({ path, keyAuthorization }) {
-      // loop through all domains
-      console.log(path, keyAuthorization);
+  greenlock.manager
+    .defaults({
+      agreeToTerms: true,
+      subscriberEmail: email,
+    })
+    .then(function (fullConfig) {
+      // ...
+      console.log(fullConfig);
 
-      res.json({
-        path,
-        keyAuthorization,
-      });
-    },
-    () => {}
-  );
+      var altnames = [domain];
+
+      greenlock
+        .add({
+          subject: altnames[0],
+          altnames: altnames,
+        })
+        .then(function () {
+          greenlock.get({ servername: altnames[0] }).then((v) => {
+            res.json(v);
+          });
+          // saved config to db (or file system)
+        });
+    });
 
   //
+
+  res.json({ ok });
 });
 
 http.listen(port, () => {
