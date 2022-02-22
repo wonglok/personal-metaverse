@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# <UDF name="USER_PASS" Label="NodeJS Linux User Password" />
 
 # All done
 echo "Starting Setup!"
