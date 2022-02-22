@@ -27,7 +27,7 @@ apt-get -y install mongodb
 GITHUB_USER="wonglok"
 GITHUB_REPO="personal-metaverse"
 
-NODE_USER="mynode"
+NODE_USER="nodejs"
 
 # SSH
 echo 'AddressFamily inet' | sudo tee -a /etc/ssh/sshd_config
