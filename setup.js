@@ -34,62 +34,54 @@ app.post("/create", async (req, res) => {
 
   let email = req.body.email;
   let domain = req.body.domain;
-  const execSync = require("child_process").execSync;
 
-  execSync(
-    `npx greenlock init --config-dir ./greenlock.d --maintainer-email ${email}`
-  );
-  execSync(`npx greenlock add --subject ${domain} --altnames ${domain}`);
+  var greenlock = Greenlock.create({
+    configDir: "./greenlock.d/config.json",
+    packageAgent: pkg.name + "/" + pkg.version,
+    maintainerEmail: email,
+    staging: true,
+    notify: function (event, details) {
+      if ("error" === event) {
+        // `details` is an error object in this case
+        console.error(details);
+      }
+    },
+  });
 
-  res.json({ ok: true });
+  await greenlock.manager
+    .defaults({
+      agreeToTerms: true,
+      subscriberEmail: email,
+    })
+    .then(function (fullConfig) {
+      // ...
+    });
 
-  // var greenlock = Greenlock.create({
-  //   configDir: "./greenlock.d/config.json",
-  //   packageAgent: pkg.name + "/" + pkg.version,
-  //   maintainerEmail: email,
-  //   staging: true,
-  //   notify: function (event, details) {
-  //     if ("error" === event) {
-  //       // `details` is an error object in this case
-  //       console.error(details);
-  //     }
-  //   },
-  // });
+  await greenlock
+    .add({
+      subject: domain,
+      altnames: domain,
+    })
+    .then(function () {
+      // saved config to db (or file system)
+    });
 
-  // await greenlock.manager
-  //   .defaults({
-  //     agreeToTerms: true,
-  //     subscriberEmail: email,
-  //   })
-  //   .then(function (fullConfig) {
-  //     // ...
-  //   });
-
-  // await greenlock
-  //   .add({
-  //     subject: domains[0],
-  //     altnames: domains,
-  //   })
-  //   .then(function () {
-  //     // saved config to db (or file system)
-  //   });
-
-  // await greenlock
-  //   .get({ servername: subject })
-  //   .then(function (pems) {
-  //     if (pems && pems.privkey && pems.cert && pems.chain) {
-  //       console.info("Success");
-  //       res.status(200).json({ ok: true });
-  //     } else {
-  //       res.status(503).json({ ok: false });
-  //     }
-  //     //console.log(pems);
-  //   })
-  //   .catch(function (e) {
-  //     console.error("Big bad error:", e.code);
-  //     console.error(e);
-  //     res.status(503).json({ ok: false });
-  //   });
+  await greenlock
+    .get({ servername: subject })
+    .then(function (pems) {
+      if (pems && pems.privkey && pems.cert && pems.chain) {
+        console.info("Success");
+        res.status(200).json({ ok: true });
+      } else {
+        res.status(503).json({ ok: false });
+      }
+      //console.log(pems);
+    })
+    .catch(function (e) {
+      console.error("Big bad error:", e.code);
+      console.error(e);
+      res.status(503).json({ ok: false });
+    });
 });
 
 app.post("/done", (req, res) => {
