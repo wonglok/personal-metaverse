@@ -6,15 +6,15 @@
 # All done
 echo "Starting Setup!"
 
-# set -e
+set -e
 
 # # Save stdout and stderr
-# exec 6>&1
-# exec 5>&2
+exec 6>&1
+exec 5>&2
 
 # # Redirect stdout and stderr to a file
-# exec > /root/StackScript.out
-# exec 2>&1
+exec > /root/StackScript.out
+exec 2>&1
 
 # apt-get
 sudo apt-get -y -o Acquire::ForceIPv4=true -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" update
@@ -54,8 +54,6 @@ npm install -g pm2
 
 echo "Starting setup nodejs!"
 
-# npx greenlock init --config-dir ./greenlock.d --maintainer-email $SSL_EMAIL
-# npx greenlock add --subject $DOMAIN --altnames $DOMAIN
 
 # Add user
 cp /root/.bashrc /etc/skel/.bashrc
@@ -88,5 +86,5 @@ node setup.js
 echo "Success!"
 
 # # Restore stdout and stderr
-# exec 1>&6 6>&-
-# exec 2>&5 5>&-
+exec 1>&6 6>&-
+exec 2>&5 5>&-
