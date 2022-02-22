@@ -25,5 +25,3 @@ app.post("/register", async (req, res) => {
 http.listen(port, () => {
   console.log(`Socket.IO Server running at http://localhost:${port}/`);
 });
-
-//

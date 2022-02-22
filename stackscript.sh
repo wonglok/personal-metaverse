@@ -66,7 +66,7 @@ chown -R "$NODE_USER":"$NODE_USER" /home/$NODE_USER/.ssh
 echo "installing nodejs setup!"
 
 # Install app
-APP_DIR="/root/$GITHUB_REPO"
+APP_DIR="/$NODE_USER/$GITHUB_REPO"
 curl -L https://github.com/$GITHUB_USER/$GITHUB_REPO/tarball/master | tar zx
 mkdir -p $APP_DIR
 mv -T $GITHUB_USER-$GITHUB_REPO-* $APP_DIR
@@ -80,6 +80,7 @@ echo "Starting Setup App!"
 
 # node setup.js
 pm2 start app.js -f
+pm2 startup ubuntu
 
 # All done
 echo "Success!"
@@ -87,3 +88,4 @@ echo "Success!"
 # # Restore stdout and stderr
 exec 1>&6 6>&-
 exec 2>&5 5>&-
+
