@@ -4,7 +4,7 @@ const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const port = process.env.PORT || 80;
 
-app.use(express.static(`public`));
+app.use(express.static(`appPublic`));
 
 io.on("connection", (socket) => {
   socket.on("chat message", (msg) => {
