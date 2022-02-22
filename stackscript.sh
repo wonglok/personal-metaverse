@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# <UDF name="USER_PASS" Label="NodeJS UserPassword" />
+# <UDF name="USER_PASS" Label="NodeJS Runtime Password" />
 
 
 # All done
