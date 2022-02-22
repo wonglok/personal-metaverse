@@ -15,5 +15,3 @@ io.on("connection", (socket) => {
 http.listen(port, () => {
   console.log(`Socket.IO Server running at http://localhost:${port}/`);
 });
-
-//
