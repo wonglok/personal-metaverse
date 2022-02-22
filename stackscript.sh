@@ -19,12 +19,6 @@ exec 2>&1
 sudo apt-get -y -o Acquire::ForceIPv4=true -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" update
 sudo DEBIAN_FRONTEND=noninteractive apt-get -y -o Acquire::ForceIPv4=true -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade
 
-echo "Starting setup certbot!"
-
-add-apt-repository ppa:certbot/certbot -y
-apt-get update -y
-apt-get install certbot -y
-
 echo "Starting setup mongodb!"
 
 apt-get -y install mongodb
