@@ -67,7 +67,7 @@ app.post("/create", async (req, res) => {
     });
 
   await greenlock
-    .get({ servername: subject })
+    .get({ servername: domain })
     .then(function (pems) {
       if (pems && pems.privkey && pems.cert && pems.chain) {
         console.info("Success");
