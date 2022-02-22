@@ -53,22 +53,21 @@ nvm install 16
 nvm use 16
 npm install -g pm2
 
-# echo "Starting setup nodejs!"
+echo "Starting setup user!"
 
-# # Add user
-# cp /root/.bashrc /etc/skel/.bashrc
-# adduser --disabled-password --gecos "" --shell /bin/bash $GITHUB_USER
-# usermod -aG sudo $GITHUB_USER
-# echo "$GITHUB_USER:$USER_PASS" | sudo chpasswd
-# mkdir -p /home/$GITHUB_USER/.ssh
-# cat /root/.ssh/authorized_keys >> /home/$GITHUB_USER/.ssh/authorized_keys
-# chown -R "$GITHUB_USER":"$GITHUB_USER" /home/$GITHUB_USER/.ssh
+# Add user
+cp /root/.bashrc /etc/skel/.bashrc
+adduser --disabled-password --gecos "" --shell /bin/bash $GITHUB_USER
+usermod -aG sudo $GITHUB_USER
+echo "$GITHUB_USER:$USER_PASS" | sudo chpasswd
+mkdir -p /home/$GITHUB_USER/.ssh
+cat /root/.ssh/authorized_keys >> /home/$GITHUB_USER/.ssh/authorized_keys
+chown -R "$GITHUB_USER":"$GITHUB_USER" /home/$GITHUB_USER/.ssh
 
 echo "Adding App Files"
 
-
 # Install app
-APP_DIR="/root/$GITHUB_REPO"
+APP_DIR="/home/$GITHUB_USER/$GITHUB_REPO"
 curl -L https://github.com/$GITHUB_USER/$GITHUB_REPO/tarball/master | tar zx
 mkdir -p $APP_DIR
 mv -T $GITHUB_USER-$GITHUB_REPO-* $APP_DIR
@@ -76,7 +75,7 @@ cd $APP_DIR
 npm install
 
 # Make it user accessible
-# chown -R "$GITHUB_USER":"$GITHUB_USER" $APP_DIR/
+chown -R "$GITHUB_USER":"$GITHUB_USER" $APP_DIR/
 
 echo "Starting Setup App!"
 
