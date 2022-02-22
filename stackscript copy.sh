@@ -23,6 +23,9 @@ echo "Starting setup mongodb!"
 
 apt-get -y install mongodb
 
+# Project specific vars
+GITHUB_USER="wonglok"
+GITHUB_REPO="personal-metaverse"
 
 NODE_USER="nodejs"
 
@@ -33,19 +36,6 @@ sed -re 's/^(PasswordAuthentication)([[:space:]]+)yes/\1\2no/' -i.'' /etc/ssh/ss
 sed -re 's/^(UsePAM)([[:space:]]+)yes/\1\2no/' -i.'' /etc/ssh/sshd_config
 sed -re 's/^(PermitRootLogin)([[:space:]]+)yes/\1\2no/' -i.'' /etc/ssh/sshd_config
 sudo systemctl restart sshd
-
-echo "Starting setup user!"
-
-# Add user
-cp /root/.bashrc /etc/skel/.bashrc
-adduser --disabled-password --gecos "" --shell /bin/bash $NODE_USER
-usermod -aG sudo $NODE_USER
-echo "$NODE_USER:$USER_PASS" | sudo chpasswd
-mkdir -p /home/$NODE_USER/.ssh
-cat /root/.ssh/authorized_keys >> /home/$NODE_USER/.ssh/authorized_keys
-chown -R "$NODE_USER":"$NODE_USER" /home/$NODE_USER/.ssh
-
-su $NODE_USER
 
 echo "Starting setup nvm!"
 
@@ -59,11 +49,18 @@ nvm install 16
 nvm use 16
 npm install -g pm2
 
-echo "Adding App Files"
+echo "Starting setup user!"
 
-# Project specific vars
-GITHUB_USER="wonglok"
-GITHUB_REPO="personal-metaverse"
+# Add user
+cp /root/.bashrc /etc/skel/.bashrc
+adduser --disabled-password --gecos "" --shell /bin/bash $NODE_USER
+usermod -aG sudo $NODE_USER
+echo "$NODE_USER:$USER_PASS" | sudo chpasswd
+mkdir -p /home/$NODE_USER/.ssh
+cat /root/.ssh/authorized_keys >> /home/$NODE_USER/.ssh/authorized_keys
+chown -R "$NODE_USER":"$NODE_USER" /home/$NODE_USER/.ssh
+
+echo "Adding App Files"
 
 # Install app
 APP_DIR="/home/$NODE_USER/$GITHUB_REPO"

@@ -18,48 +18,9 @@ app.post("/register", async (req, res) => {
   let email = req.body.email;
   let domain = req.body.domain;
 
-  var pkg = require("./package.json");
-  var Greenlock = require("greenlock");
-  var greenlock = Greenlock.create({
-    configDir: "./greenlock.d/config.json",
-    packageAgent: pkg.name + "/" + pkg.version,
-    maintainerEmail: email,
-    staging: true,
-    notify: function (event, details) {
-      if ("error" === event) {
-        // `details` is an error object in this case
-        console.error(details);
-      }
-    },
-  });
+  console.log(email, domain);
 
-  greenlock.manager
-    .defaults({
-      agreeToTerms: true,
-      subscriberEmail: email,
-    })
-    .then(function (fullConfig) {
-      // ...
-      console.log(fullConfig);
-
-      var altnames = [domain];
-
-      greenlock
-        .add({
-          subject: altnames[0],
-          altnames: altnames,
-        })
-        .then(function () {
-          greenlock.get({ servername: altnames[0] }).then((v) => {
-            res.json(v);
-          });
-          // saved config to db (or file system)
-        });
-    });
-
-  //
-
-  res.json({ ok });
+  res.json({ ok: true });
 });
 
 http.listen(port, () => {
