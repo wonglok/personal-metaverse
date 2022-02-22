@@ -23,9 +23,39 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get -y -o Acquire::ForceIPv4=true -o Dpk
 # add-apt-repository ppa:certbot/certbot
 # apt-get install certbot
 
-echo "Starting setup mongodb!"
+echo "Starting setup certbot!"
+sudo snap install core;
+sudo snap refresh core;
+sudo snap install --classic certbot
+sudo ln -s /snap/bin/certbot /usr/bin/certbot
 
+echo "Starting setup mongodb!"
 apt-get -y install mongodb
+
+echo "Starting setup nginx!"
+apt-get -y install nginx
+sudo systemctl start nginx
+sudo systemctl enable nginx
+
+cat > /etc/nginx/sites-available/default << EOF
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server ipv6only=on;
+
+    location / {
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-NginX-Proxy true;
+      proxy_pass http://localhost:3000;
+      proxy_set_header Host $http_host;
+      proxy_cache_bypass $http_upgrade;
+      proxy_redirect off;
+    }
+}
+EOF
+
+sudo nginx -t
+sudo systemctl restart nginx
 
 # Project specific vars
 NODE_USER="nodejs"
@@ -89,3 +119,7 @@ echo "Success!"
 exec 1>&6 6>&-
 exec 2>&5 5>&-
 
+
+# pm2 stop app.js
+# certbot certonly --standalone --domains metaverse.thankyoudb.com -n --agree-tos -m yellowhappy831@gmail.com
+# pm2 start app.js -f
