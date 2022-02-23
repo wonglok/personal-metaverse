@@ -107,6 +107,8 @@
         el.submitssl.addEventListener("click", submit);
 
         el.ipspan.innerHTML = `${window.location.hostname}`;
+
+        //
         // async function init() {
         //   let IPData = await fetch("/ips").then((e) => e.json());
 
@@ -121,6 +123,22 @@
         //   el.ips.innerHTML = myIPHTML;
         // }
         // init();
+        /*
+        let result = await fetch("/cmd", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              domain: 'metaverse.thankyoudb.com'
+            }),
+          })
+            .then((e) => e.json())
+            .then((v) => {
+              //
+              console.log(v);
+            });
+        */
       };
     </script>
   </body>
